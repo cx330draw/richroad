@@ -156,6 +156,9 @@ function fullShuffle() {
     applyCardTransform(card);
   });
 
+  cards = shuffleArray(cards);
+  cards.forEach((card) => cardArea.append(card));
+
   setTimeout(() => {
     scatterCards({ animated: true });
     canPickCard = true;
