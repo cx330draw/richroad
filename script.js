@@ -11,6 +11,9 @@ const CARD_TEXTS = [
 const cardArea = document.getElementById("cardArea");
 const shuffleBtn = document.getElementById("shuffleBtn");
 let cards = [];
+let openedCard = null;
+let hasDrawnThisRound = false;
+let canPickCard = false;
 
 function applyCardTransform(card) {
   const rotate = Number(card.dataset.rotate || 0);
@@ -45,7 +48,13 @@ function createCard(text, idx) {
   card.append(back, front);
 
   card.addEventListener("click", () => {
-    card.classList.toggle("flipped");
+    if (!canPickCard || hasDrawnThisRound) {
+      return;
+    }
+
+    card.classList.add("flipped");
+    openedCard = card;
+    hasDrawnThisRound = true;
     applyCardTransform(card);
   });
 
@@ -66,40 +75,31 @@ function getScatterPositions(count) {
   const cardWidth = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--card-width"));
   const cardHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--card-height"));
 
-  const startY = Math.max(areaHeight * 0.52, 220);
-  const usableHeight = Math.max(areaHeight - startY - cardHeight - 20, 80);
-
-  const columns = Math.min(count, areaWidth < 760 ? 3 : 4);
-  const rows = Math.ceil(count / columns);
-
-  const cellWidth = (areaWidth - 40) / columns;
-  const cellHeight = Math.max(usableHeight / rows, cardHeight + 8);
+  const startY = Math.max(areaHeight * 0.62, 220);
+  const sidePadding = 20;
+  const minGap = 8;
+  const availableWidth = Math.max(areaWidth - sidePadding * 2, cardWidth * count);
+  const rawGap = (availableWidth - cardWidth * count) / Math.max(count - 1, 1);
+  const gap = Math.max(minGap, rawGap);
+  const totalWidth = cardWidth * count + gap * Math.max(count - 1, 0);
+  const startX = Math.max(sidePadding, (areaWidth - totalWidth) / 2);
 
   const positions = [];
   for (let i = 0; i < count; i += 1) {
-    const row = Math.floor(i / columns);
-    const col = i % columns;
-
-    const baseLeft = 20 + col * cellWidth;
-    const baseTop = startY + row * cellHeight;
-
-    const maxXJitter = Math.max(6, (cellWidth - cardWidth) / 2 - 4);
-    const maxYJitter = Math.max(6, (cellHeight - cardHeight) / 2 - 4);
-
-    const jitterX = (Math.random() * 2 - 1) * maxXJitter;
-    const jitterY = (Math.random() * 2 - 1) * maxYJitter;
-
-    const left = Math.min(areaWidth - cardWidth - 16, Math.max(16, baseLeft + (cellWidth - cardWidth) / 2 + jitterX));
-    const top = Math.min(areaHeight - cardHeight - 16, Math.max(startY, baseTop + (cellHeight - cardHeight) / 2 + jitterY));
+    const left = Math.min(
+      areaWidth - cardWidth - 16,
+      Math.max(16, startX + i * (cardWidth + gap))
+    );
+    const top = Math.min(areaHeight - cardHeight - 16, startY);
 
     positions.push({
       left,
       top,
-      rotate: Math.round((Math.random() * 2 - 1) * 18),
+      rotate: 0,
     });
   }
 
-  return shuffleArray(positions);
+  return positions;
 }
 
 function renderInitialCards() {
@@ -136,12 +136,15 @@ function scatterCards({ animated = true } = {}) {
 }
 
 function fullShuffle() {
+  canPickCard = false;
+  hasDrawnThisRound = false;
   const centerX = window.innerWidth / 2 - 80;
   const centerY = window.innerHeight * 0.6;
 
   cards.forEach((card, idx) => {
     card.classList.remove("flipped");
     card.classList.add("shuffling");
+    if (openedCard === card) openedCard = null;
 
     const swirlX = centerX + (Math.random() * 120 - 60);
     const swirlY = centerY + (Math.random() * 90 - 45);
@@ -153,11 +156,17 @@ function fullShuffle() {
     applyCardTransform(card);
   });
 
-  setTimeout(() => scatterCards({ animated: true }), 420);
+  setTimeout(() => {
+    scatterCards({ animated: true });
+    canPickCard = true;
+  }, 420);
 }
 
 shuffleBtn.addEventListener("click", fullShuffle);
 window.addEventListener("resize", () => scatterCards({ animated: false }));
 
 renderInitialCards();
-setTimeout(() => scatterCards({ animated: true }), 200);
+setTimeout(() => {
+  scatterCards({ animated: true });
+  canPickCard = true;
+}, 200);
