@@ -32,8 +32,8 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.45);
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
-  font-size: 16px;
-  padding: 10px 18px;
+  font-size: 24px;
+  padding: 15px 27px;
   border-radius: 999px;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
@@ -62,8 +62,21 @@ body {
 }
 
 .card:hover {
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.68), 0 0 24px 8px rgba(255, 255, 255, 0.35);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
   border-radius: 14px;
+  border: 0 solid rgba(255, 255, 255, 0.92);
+  pointer-events: none;
+  transition: border-width 0.15s ease;
+}
+
+.card:hover::after {
+  border-width: 4px;
 }
 
 .card.flipped {
@@ -87,7 +100,9 @@ body {
 .card-front {
   transform: rotateY(180deg);
   border: 1px solid rgba(255, 255, 255, 0.5);
-  background: linear-gradient(150deg, rgba(255, 235, 178, 0.93), rgba(255, 211, 111, 0.9));
+  background:
+    linear-gradient(150deg, rgba(20, 15, 6, 0.48), rgba(20, 15, 6, 0.68)),
+    url("image2.png") center/cover no-repeat;
   color: #221b14;
   display: flex;
   align-items: center;
@@ -97,7 +112,8 @@ body {
   font-size: 21px;
   font-weight: 700;
   line-height: 1.35;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  color: #fff7db;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
 }
 
 .card.shuffling {
