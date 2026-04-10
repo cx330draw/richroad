@@ -62,10 +62,6 @@ body {
   box-shadow: none;
 }
 
-.card:hover {
-  box-shadow: 0 0 18px rgba(255, 255, 255, 0.7), 0 0 30px rgba(255, 255, 255, 0.45);
-}
-
 .card.flipped {
   transform: rotateY(180deg);
 }
