@@ -1,0 +1,116 @@
+:root {
+  --card-width: 160px;
+  --card-height: 240px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  background: #111 url("background.jpeg") center/cover no-repeat fixed;
+  overflow: hidden;
+}
+
+.app {
+  min-height: 100vh;
+  position: relative;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.52));
+}
+
+.toolbar {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
+}
+
+.shuffle-btn {
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 16px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.shuffle-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(0, 0, 0, 0.65);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.card-area {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  padding-top: 50vh;
+}
+
+.card {
+  position: absolute;
+  width: var(--card-width);
+  height: var(--card-height);
+  transform-style: preserve-3d;
+  cursor: pointer;
+  transition: transform 0.85s ease, left 0.9s cubic-bezier(0.23, 1, 0.32, 1), top 0.9s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.25s ease;
+}
+
+.card:hover {
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.68), 0 0 24px 8px rgba(255, 255, 255, 0.35);
+  border-radius: 14px;
+}
+
+.card.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.card-back {
+  background: #1d1d1d url("image.png") center/cover no-repeat;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.card-front {
+  transform: rotateY(180deg);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: linear-gradient(150deg, rgba(255, 235, 178, 0.93), rgba(255, 211, 111, 0.9));
+  color: #221b14;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 16px;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.card.shuffling {
+  transition: left 0.35s ease, top 0.35s ease, transform 0.35s ease;
+}
+
+@media (max-width: 880px) {
+  :root {
+    --card-width: 132px;
+    --card-height: 198px;
+  }
+
+  .card-front {
+    font-size: 18px;
+  }
+}
